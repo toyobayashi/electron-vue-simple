@@ -1,19 +1,16 @@
 <template>
 <div>
   <div class="text-center"><img src="../res/img/256x256.png"></div>
-  <h1 class="red text-center">electron-vue-simple</h1>
+  <h1 class="vue text-center">electron-vue-simple</h1>
   <p class="text-center">Electron: {{electronVer}}</p>
+  <p class="text-center">Vue: {{vueVer}}</p>
+  <p class="text-center">Dir: '{{dirname}}'</p>
+  <p class="text-center">File: '{{filename}}'</p>
 </div>
 </template>
 
 <script src="../js/app.js">
 </script>
 
-<style scoped>
-.text-center {
-  text-align: center;
-}
-.red {
-  color: red;
-}
+<style src="../css/app.css">
 </style>

@@ -7,21 +7,15 @@ let renderer = {
   target: 'electron-renderer',
   entry: './src/renderer.js',
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.join(__dirname, 'public'),
     filename: 'renderer.js'
   },
   node: {
-    __dirname: process.env.NODE_ENV !== 'production'
+    __dirname: process.env.NODE_ENV !== 'production',
+    __filename: process.env.NODE_ENV !== 'production'
   },
   module: {
     rules: [{
-      test: /\.css$/,
-      exclude: /node_modules/,
-      use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: 'css-loader'
-      })
-    }, {
       test: /\.(eot|woff|svg|woff2|ttf|otf)$/,
       exclude: /node_modules/,
       loader: 'file-loader?name=./asset/font/[name].[ext]?[hash]'
@@ -35,7 +29,7 @@ let renderer = {
       loader: 'vue-loader',
       options: {
         loaders: {},
-        extractCSS: true
+        extractCSS: process.env.NODE_ENV === 'production'
         // other vue-loader options go here
       }
     }]
@@ -46,21 +40,10 @@ let renderer = {
     }
   },
   plugins: [
-    new ExtractTextPlugin('./renderer.css'),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    }),
     new webpack.DllReferencePlugin({
       manifest: require('./build/manifest.json')
     })
-  ],
-  devServer: {
-    hot: true,
-    inline: true,
-    contentBase: path.resolve(__dirname, 'public'),
-    compress: true,
-    port: 7777
-  }
+  ]
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -75,8 +58,29 @@ if (process.env.NODE_ENV === 'production') {
     }
   })
   renderer.resolve.alias['vue'] = 'vue/dist/vue.min.js'
-  renderer.plugins.push(uglifyjs)
-  delete renderer['devServer']
+  renderer.plugins = renderer.plugins.concat([
+    uglifyjs,
+    new ExtractTextPlugin('./renderer.css'),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    })
+  ])
+  renderer.module.rules.push({
+    test: /\.css$/,
+    exclude: /node_modules/,
+    use: ExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })
+  })
+} else {
+  renderer.module.rules.push({
+    test: /\.css$/,
+    exclude: /node_modules/,
+    loader: 'style-loader!css-loader'
+  })
+  renderer.devServer = {
+    contentBase: path.join(__dirname, 'public'),
+    compress: true,
+    port: 7777
+  }
 }
 
 module.exports = renderer

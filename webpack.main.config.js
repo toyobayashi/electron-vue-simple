@@ -9,7 +9,8 @@ let main = {
     filename: 'main.js'
   },
   node: {
-    __dirname: false
+    __dirname: false,
+    __filename: false
   },
   plugins: []
 }

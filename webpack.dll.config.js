@@ -37,7 +37,7 @@ const renderer = {
   ]
 }
 
-if (process.env.NODE_ENV == 'production') {
+if (process.env.NODE_ENV === 'production') {
   renderer.entry.vendor.push('vue/dist/vue.min.js')
 } else {
   renderer.entry.vendor.push('vue/dist/vue.js')
