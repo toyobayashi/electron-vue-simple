@@ -1,0 +1,46 @@
+{
+  "name": "electron-vue-simple",
+  "version": "1.0.0",
+  "description": "electron-vue-simple",
+  "main": "./public/main.js",
+  "scripts": {
+    "start": "electron . --enable-logging",
+    "webpack": "webpack --config webpack.renderer.config.js&&webpack --config webpack.main.config.js",
+    "dll": "webpack --config webpack.dll.config.js",
+    "dev": "npm run dll&&node devServer",
+    "prod": "set NODE_ENV=production&&npm run dll&&npm run webpack&&node pack"
+  },
+  "keywords": [
+    "electron",
+    "vue"
+  ],
+  "author": "toyobayashi",
+  "license": "MIT",
+  "devDependencies": {
+    "cmd-rainbow": "^1.0.1",
+    "css-loader": "^0.28.9",
+    "electron": "^1.7.11",
+    "eslint": "^4.16.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-html": "^4.0.2",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "file-loader": "^1.1.6",
+    "rcedit": "^0.9.0",
+    "request": "^2.83.0",
+    "style-loader": "^0.19.1",
+    "uglifyjs-webpack-plugin": "^1.1.6",
+    "unzip": "^0.1.11",
+    "url-loader": "^0.6.2",
+    "vue-loader": "^13.7.0",
+    "vue-template-compiler": "^2.5.13",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
+  },
+  "dependencies": {
+    "vue": "^2.5.13"
+  }
+}
