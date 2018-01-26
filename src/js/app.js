@@ -1,3 +1,4 @@
+import binding from 'hello'
 export default {
   data () {
     return {
@@ -6,5 +7,10 @@ export default {
       dirname: __dirname,
       filename: __filename
     }
+  },
+  mounted () {
+    this.$nextTick(() => {
+      alert(binding.native())
+    })
   }
 }

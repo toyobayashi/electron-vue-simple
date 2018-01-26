@@ -28,7 +28,7 @@ const ELECTRON_RELEASE_DIR = path.join(__dirname, 'dist')
 const ELECTRON_RELEASE_PATH = path.join(ELECTRON_RELEASE_DIR, `${ELECTRON_NAME}.zip`)
 const DIST_PATH = path.join(__dirname, 'dist', APP_NAME)
 const APP_PATH = path.join(DIST_PATH, 'resources', 'app')
-const IGNORE_REGEXP = new RegExp(`node_modules|data|release|build|download|dist|src|screenshot|${path.join('public/img/card').replace(/\\/g, '\\\\')}|${path.join('public/asset/sound/live').replace(/\\/g, '\\\\')}|.gitignore|README.md|webpack|.eslintrc.json|config.json|package-lock.json|pack.js|.git`)
+const IGNORE_REGEXP = new RegExp(`node_modules|data|release|build|download|dist|src|screenshot|${path.join('public/img/card').replace(/\\/g, '\\\\')}|${path.join('public/asset/sound/live').replace(/\\/g, '\\\\')}|.gitignore|README.md|webpack|.eslintrc.json|nativeModules.js|devServer.js|package-lock.json|pack.js|.git`)
 
 if (!fs.existsSync(ELECTRON_RELEASE_DIR)) fs.mkdirSync(ELECTRON_RELEASE_DIR)
 downloadElectronRelease()
