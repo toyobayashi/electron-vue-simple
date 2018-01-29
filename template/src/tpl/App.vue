@@ -2,10 +2,10 @@
 <div>
   <div class="text-center"><img src="../res/img/256x256.png"></div>
   <h1 class="vue text-center">electron-vue-simple</h1>
-  <p class="text-center">Electron: {{electronVer}}</p>
-  <p class="text-center">Vue: {{vueVer}}</p>
-  <p class="text-center">Dir: '{{dirname}}'</p>
-  <p class="text-center">File: '{{filename}}'</p>
+  <p class="text-center" v-text="`Electron: ${electronVer}`"></p>
+  <p class="text-center" v-text="`Vue: ${vueVer}`"></p>
+  <p class="text-center" v-text="`Dir: '${dirname}'`"></p>
+  <p class="text-center" v-text="`File: '${filename}'`"></p>
 </div>
 </template>
 

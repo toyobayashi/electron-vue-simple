@@ -1,7 +1,7 @@
 {
-  "name": "electron-vue-simple",
+  "name": "{{name}}",
   "version": "1.0.0",
-  "description": "electron-vue-simple",
+  "description": "{{description}}",
   "main": "./public/main.js",
   "scripts": {
     "start": "electron . --enable-logging",
@@ -14,8 +14,8 @@
     "electron",
     "vue"
   ],
-  "author": "toyobayashi",
-  "license": "MIT",
+  "author": "{{author}}",
+  "license": "{{license}}",
   "devDependencies": {
     "cmd-rainbow": "^1.0.1",
     "css-loader": "^0.28.9",
