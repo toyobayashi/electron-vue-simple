@@ -16,7 +16,7 @@ let versionString = {
   OriginalFilename: packageJson.name + '.exe',
   ProductName: packageJson.name,
   CompanyName: packageJson.author.name,
-  LegalCopyright: 'Copyright (C) 2017 Toyobayashi'
+  LegalCopyright: `Copyright (C) ${new Date().getFullYear()} ${typeof packageJson.author === 'object' ? packageJson.author.name : packageJson.author}`
 }
 
 const ELECTRON_VERSION = packageJson.devDependencies.electron.slice(1)
