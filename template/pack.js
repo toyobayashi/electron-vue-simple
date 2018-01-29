@@ -15,7 +15,7 @@ let versionString = {
   InternalName: packageJson.name,
   OriginalFilename: packageJson.name + '.exe',
   ProductName: packageJson.name,
-  CompanyName: packageJson.author.name,
+  CompanyName: typeof packageJson.author === 'object' ? packageJson.author.name : packageJson.author,
   LegalCopyright: `Copyright (C) ${new Date().getFullYear()} ${typeof packageJson.author === 'object' ? packageJson.author.name : packageJson.author}`
 }
 
