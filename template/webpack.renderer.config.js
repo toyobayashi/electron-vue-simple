@@ -37,7 +37,7 @@ let renderer = {
   },
   resolve: {
     alias: {
-      'vue': 'vue/dist/vue.js'
+      'vue': 'vue/dist/vue.runtime.esm.js'
     }
   },
   externals: {},
@@ -65,7 +65,7 @@ if (process.env.NODE_ENV === 'production') {
       warnings: false
     }
   })
-  renderer.resolve.alias['vue'] = 'vue/dist/vue.min.js'
+  renderer.resolve.alias['vue'] = 'vue/dist/vue.runtime.min.js'
   renderer.plugins = renderer.plugins.concat([
     uglifyjs,
     new ExtractTextPlugin('./renderer.css'),
