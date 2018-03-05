@@ -8,7 +8,7 @@ Vue.use({
   }
 })
 
-new Vue({
+window.app = new Vue({
   el: '#app',
   render: h => h(App)
 })

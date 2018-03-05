@@ -9,7 +9,7 @@
       "type": "string",
       "required": true,
       "label": "Project description",
-      "default": "A electron-vue project"
+      "default": "An electron-vue project"
     },
     "author": {
       "type": "string",

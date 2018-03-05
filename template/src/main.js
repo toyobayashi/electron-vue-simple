@@ -9,7 +9,7 @@ function createWindow () {
   })
 
   let winURL = ''
-  if (process.env.NODE_ENV && process.env.NODE_ENV === 'electron-dev') {
+  if (process.env.NODE_ENV && process.env.NODE_ENV === 'dev') {
     winURL = `http://localhost:7777/index.html`
   } else {
     winURL = `file://${__dirname}/index.html`

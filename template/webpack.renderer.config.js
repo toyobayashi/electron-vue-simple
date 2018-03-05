@@ -2,7 +2,7 @@ const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const path = require('path')
-const native = require('./nativeModules.js')
+const native = require('./native.js')
 
 let renderer = {
   target: 'electron-renderer',
@@ -40,19 +40,13 @@ let renderer = {
       'vue': 'vue/dist/vue.runtime.esm.js'
     }
   },
-  externals: {},
+  externals: native(['hello']),
   plugins: [
     new webpack.DllReferencePlugin({
       manifest: require('./build/manifest.json')
     })
   ]
 }
-
-native.addons.forEach((addon, i) => {
-  renderer.externals[addon] = process.env.NODE_ENV === 'production'
-    ? `require("${native.path + '/' + addon + '.node'}")`
-    : `require("${path.join(renderer.output.path, native.path, addon + '.node').replace(/\\/g, '\\\\')}")`
-})
 
 if (process.env.NODE_ENV === 'production') {
   const uglifyjs = new UglifyJSPlugin({

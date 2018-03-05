@@ -6,71 +6,94 @@ const fs = require('fs')
 const path = require('path')
 const packageJson = require('./package.json')
 
-const PLATFORM = 'win32'
-const ARCH = 'ia32'
-const ICON_PATH = path.join(__dirname, './src/res/icon/app.ico')
-let versionString = {
-  'Block Header': '080404b0',
-  FileDescription: packageJson.description,
-  InternalName: packageJson.name,
-  OriginalFilename: packageJson.name + '.exe',
-  ProductName: packageJson.name,
-  CompanyName: typeof packageJson.author === 'object' ? packageJson.author.name : packageJson.author,
-  LegalCopyright: `Copyright (C) ${new Date().getFullYear()} ${typeof packageJson.author === 'object' ? packageJson.author.name : packageJson.author}`
-}
-
-const ELECTRON_VERSION = packageJson.devDependencies.electron.slice(1)
-const ELECTRON_NAME = `electron-v${ELECTRON_VERSION}-${PLATFORM}-${ARCH}`
-const APP_NAME = `${packageJson.name}-v${packageJson.version}-${PLATFORM}-${ARCH}`
-const ELECTRON_URL = `https://npm.taobao.org/mirrors/electron/${ELECTRON_VERSION}/${ELECTRON_NAME}.zip`
-// const ELECTRON_URL = `https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/${ELECTRON_NAME}.zip`
-const ELECTRON_RELEASE_DIR = path.join(__dirname, 'dist')
-const ELECTRON_RELEASE_PATH = path.join(ELECTRON_RELEASE_DIR, `${ELECTRON_NAME}.zip`)
-const DIST_PATH = path.join(__dirname, 'dist', APP_NAME)
-const APP_PATH = path.join(DIST_PATH, 'resources', 'app')
-const IGNORE_REGEXP = new RegExp(`node_modules|data|release|build|download|dist|src|screenshot|${path.join('public/img/card').replace(/\\/g, '\\\\')}|${path.join('public/asset/sound/live').replace(/\\/g, '\\\\')}|.gitignore|README.md|webpack|.eslintrc.json|nativeModules.js|devServer.js|package-lock.json|pack.js|.git`)
-
-if (!fs.existsSync(ELECTRON_RELEASE_DIR)) fs.mkdirSync(ELECTRON_RELEASE_DIR)
-downloadElectronRelease()
-  .then(() => {
-    if (fs.existsSync(DIST_PATH)) {
-      wlog(`[WARNING ${t()}] ${DIST_PATH} exists.`)
-      return remove(DIST_PATH)
-    }
-    return []
-  })
-  .then(() => unzipElectron())
-  .then(() => new Promise((resolve, reject) => {
-    fs.unlinkSync(path.join(DIST_PATH, 'resources', 'default_app.asar'))
-    fs.rename(path.join(DIST_PATH, 'electron.exe'), path.join(DIST_PATH, `./${packageJson.name}.exe`), err => {
-      if (err) reject(err)
-      else resolve()
-    })
-  }))
-  .then(() => changeExeInfo(path.join(DIST_PATH, `${packageJson.name}.exe`), {
-    icon: ICON_PATH,
+pack({
+  platform: 'win32',
+  arch: process.argv[2] ? process.argv[2] : 'x64',
+  electronVersion: packageJson.devDependencies.electron,
+  distDir: path.join(__dirname, 'dist'),
+  ignore: new RegExp(`node_modules|build|release|dist|src|.gitignore|README|webpack|.eslintrc.json|package-lock.json|pack.js|.git|.vscode|dev.js|native.js`),
+  versionString: {
+    icon: path.join(__dirname, './src/res/icon/app.ico'),
     'file-version': packageJson.version,
     'product-version': packageJson.version,
-    'version-string': versionString
-  }))
-  .then(() => {
-    ilog(`[INFO ${t()}] EXE file changed.`)
-    return copy(__dirname, APP_PATH, IGNORE_REGEXP)
-  })
-  .then(pathArr => {
-    ilog(`[INFO ${t()}] Pack done.`)
-  })
-  .catch(err => {
-    elog(`[ERROR ${t()}] ${err}`)
-  })
+    'version-string': {
+      // 'Block Header': '080404b0',
+      FileDescription: packageJson.description,
+      InternalName: packageJson.name,
+      OriginalFilename: packageJson.name + '.exe',
+      ProductName: packageJson.name,
+      CompanyName: packageJson.author,
+      LegalCopyright: `Copyright (C) ${new Date().getFullYear()} ${packageJson.author}`
+    }
+  }
+})
 
-function downloadElectronRelease () {
-  const PROGRESS_LENGTH = 30
-  if (!fs.existsSync(ELECTRON_RELEASE_PATH)) {
+function pack (option) {
+  const PLATFORM = option.platform ? option.platform : 'win32'
+  const ARCH = option.arch ? option.arch : 'ia32'
+  const ELECTRON_VERSION = option.electronVersion ? option.electronVersion : packageJson.devDependencies.electron.slice(1)
+  const DIST_DIR = option.distDir ? option.distDir : path.join(__dirname, '../../../dist')
+  const IGNORE_REGEXP = option.ignore
+  const VERSION_STRING = option.versionString
+
+  const ELECTRON_NAME = `electron-v${ELECTRON_VERSION}-${PLATFORM}-${ARCH}`
+  const ELECTRON_URL = `https://npm.taobao.org/mirrors/electron/${ELECTRON_VERSION}/${ELECTRON_NAME}.zip`
+  // const ELECTRON_URL = `https://github.com/electron/electron/releases/download/v${ELECTRON_VERSION}/${ELECTRON_NAME}.zip`
+  const APP_NAME = `${packageJson.name}-v${packageJson.version}-${PLATFORM}-${ARCH}`
+  const ELECTRON_PATH = path.join(DIST_DIR, `${ELECTRON_NAME}.zip`)
+  const DIST_PATH = path.join(DIST_DIR, APP_NAME)
+  const APP_PATH = path.join(DIST_PATH, 'resources', 'app')
+  const BIN_PATH = path.join(APP_PATH, 'public', 'lib')
+
+  if (!fs.existsSync(DIST_DIR)) fs.mkdirSync(DIST_DIR)
+  downloadElectronRelease(ELECTRON_URL, ELECTRON_PATH)
+    .then(() => {
+      if (fs.existsSync(DIST_PATH)) {
+        wlog(`[WARNING ${t()}] ${DIST_PATH} exists.`)
+        return remove(DIST_PATH)
+      }
+      return []
+    })
+    .then(() => unzipElectron(ELECTRON_PATH, DIST_PATH))
+    .then(() => new Promise((resolve, reject) => {
+      fs.unlinkSync(path.join(DIST_PATH, 'resources', 'default_app.asar'))
+      fs.rename(path.join(DIST_PATH, 'electron.exe'), path.join(DIST_PATH, `${packageJson.name}.exe`), err => {
+        if (err) reject(err)
+        else resolve()
+      })
+    }))
+    .then(() => {
+      if (VERSION_STRING) return changeExeInfo(path.join(DIST_PATH, `${packageJson.name}.exe`), VERSION_STRING)
+      else return false
+    })
+    .then((isChanged) => {
+      if (isChanged) ilog(`[INFO ${t()}] EXE file changed.`)
+      return copy(path.join(__dirname), APP_PATH, IGNORE_REGEXP)
+    })
+    .then(pathArr => {
+      let files = fs.readdirSync(BIN_PATH)
+      for (let i = 0; i < files.length; i++) {
+        let abs = path.join(BIN_PATH, files[i])
+        if (ARCH === 'ia32') {
+          if (/-x64\.node$/.test(files[i]) && fs.statSync(abs).isFile()) remove(abs)
+        } else {
+          if (/-ia32\.node$/.test(files[i]) && fs.statSync(abs).isFile()) remove(abs)
+        }
+      }
+      ilog(`[INFO ${t()}] Pack done.`)
+    })
+    .catch(err => {
+      elog(`[ERROR ${t()}] ${err}`)
+    })
+}
+
+function downloadElectronRelease (electronUrl, electronPath) {
+  const PROGRESS_LENGTH = 50
+  if (!fs.existsSync(electronPath)) {
     return new Promise((resolve, reject) => {
       let cur = 0
-      const FILE_SIZE = fs.existsSync(ELECTRON_RELEASE_PATH + '.tmp') ? fs.readFileSync(ELECTRON_RELEASE_PATH + '.tmp').length : 0
-      let options = FILE_SIZE ? { url: ELECTRON_URL, headers: { 'Range': 'bytes=' + FILE_SIZE + '-' } } : { url: ELECTRON_URL }
+      const FILE_SIZE = fs.existsSync(electronPath + '.tmp') ? fs.readFileSync(electronPath + '.tmp').length : 0
+      let options = FILE_SIZE ? { url: electronUrl, headers: { 'Range': 'bytes=' + FILE_SIZE + '-' } } : { url: electronUrl }
       let req = request(options)
       req.on('response', response => {
         if (response.statusCode !== 200 && response.statusCode !== 304 && response.statusCode !== 206) {
@@ -78,9 +101,9 @@ function downloadElectronRelease () {
           req.abort()
           reject(new Error('Request failed.'))
         } else {
-          ilog(`[INFO ${t()}] Downloading ${ELECTRON_NAME}.zip`)
+          ilog(`[INFO ${t()}] Downloading ${path.parse(electronPath).base}`)
           const CONTENT_LENGTH = Number(response.headers['content-length'])
-          let ws = fs.createWriteStream(ELECTRON_RELEASE_PATH + '.tmp', { flags: 'a+' })
+          let ws = fs.createWriteStream(electronPath + '.tmp', { flags: 'a+' })
           req.on('data', chunk => {
             cur += chunk.length
             const PERCENT = (FILE_SIZE + cur) / (CONTENT_LENGTH + FILE_SIZE)
@@ -88,17 +111,14 @@ function downloadElectronRelease () {
             const PROGRESS_BAR = `[${repeat('=', COMPLETED_LENGTH - 1)}>${repeat(' ', PROGRESS_LENGTH - COMPLETED_LENGTH)}] `
             slog(PROGRESS_BAR + (100 * PERCENT).toFixed(2) + '%')
           })
-          req.on('error', err => {
-            reject(err)
-          })
           ws.on('close', () => {
-            fs.renameSync(ELECTRON_RELEASE_PATH + '.tmp', ELECTRON_RELEASE_PATH)
+            fs.renameSync(electronPath + '.tmp', electronPath)
             ilog(`\n[INFO ${t()}] Download completed.`)
             resolve()
           })
           req.pipe(ws)
         }
-      })
+      }).on('error', err => reject(err))
     })
   } else return Promise.resolve()
   function repeat (char, l) {
@@ -107,13 +127,13 @@ function downloadElectronRelease () {
   }
 }
 
-function unzipElectron () {
+function unzipElectron (electronPath, distPath) {
   return new Promise(resolve => {
-    let readStream = fs.createReadStream(ELECTRON_RELEASE_PATH)
-    let writeStream = unzip.Extract({ path: DIST_PATH })
+    let readStream = fs.createReadStream(electronPath)
+    let writeStream = unzip.Extract({ path: distPath })
     readStream.pipe(writeStream)
     writeStream.on('close', () => {
-      resolve(DIST_PATH)
+      resolve(distPath)
     })
   })
 }
@@ -122,7 +142,7 @@ function changeExeInfo (exePath, option) {
   return new Promise((resolve, reject) => {
     rcedit(exePath, option, err => {
       if (err) reject(err)
-      else resolve()
+      else resolve(true)
     })
   })
 }
