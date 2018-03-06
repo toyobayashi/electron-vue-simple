@@ -37,10 +37,6 @@ const renderer = {
   ]
 }
 
-if (process.env.NODE_ENV === 'production') {
-  renderer.entry.vendor.push('vue/dist/vue.runtime.min.js')
-} else {
-  renderer.entry.vendor.push('vue/dist/vue.runtime.esm.js')
-}
+renderer.entry.vendor.push(process.env.NODE_ENV === 'production' ? 'vue/dist/vue.runtime.min.js' : 'vue')
 
 module.exports = renderer
