@@ -5,12 +5,12 @@
   "main": "./public/main.js",
   "scripts": {
     "start": "electron . --enable-logging",
-    "webpack": "webpack --config webpack.renderer.config.js&&webpack --config webpack.main.config.js",
-    "dll": "webpack --config webpack.dll.config.js",
-    "dev": "node dev",
+    "webpack": "webpack --config ./build/webpack.renderer.config.js&&webpack --config ./build/webpack.main.config.js",
+    "dll": "webpack --config ./build/webpack.dll.config.js",
+    "dev": "node ./build/dev",
     "prod": "set NODE_ENV=production&&npm run dll&&npm run webpack",
-    "pkg32": "set NODE_ENV=production&&npm run dll&&npm run webpack&&node pack ia32",
-    "pkg64": "set NODE_ENV=production&&npm run dll&&npm run webpack&&node pack x64"
+    "pkg32": "set NODE_ENV=production&&npm run dll&&npm run webpack&&node ./build/pack ia32",
+    "pkg64": "set NODE_ENV=production&&npm run dll&&npm run webpack&&node ./build/pack x64"
   },
   "keywords": [
     "electron",

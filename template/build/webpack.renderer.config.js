@@ -6,9 +6,9 @@ const native = require('./native.js')
 
 let renderer = {
   target: 'electron-renderer',
-  entry: './src/renderer.js',
+  entry: path.join(__dirname, '../src/renderer.js'),
   output: {
-    path: path.join(__dirname, 'public'),
+    path: path.join(__dirname, '../public'),
     filename: 'renderer.js'
   },
   node: {
@@ -43,7 +43,7 @@ let renderer = {
   externals: native(['hello']),
   plugins: [
     new webpack.DllReferencePlugin({
-      manifest: require('./build/manifest.json')
+      manifest: require('./manifest.json')
     })
   ]
 }
@@ -78,7 +78,7 @@ if (process.env.NODE_ENV === 'production') {
     loader: 'style-loader!css-loader'
   })
   renderer.devServer = {
-    contentBase: path.join(__dirname, 'public'),
+    contentBase: path.join(__dirname, '../public'),
     compress: true,
     port: 7777
   }

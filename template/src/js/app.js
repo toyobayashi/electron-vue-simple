@@ -1,9 +1,11 @@
 import binding from 'hello'
+import Vue from 'vue'
+
 export default {
   data () {
     return {
       electronVer: process.versions.electron,
-      vueVer: this.$_version,
+      vueVer: Vue.version,
       dirname: __dirname,
       filename: __filename
     }

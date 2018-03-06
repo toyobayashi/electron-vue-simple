@@ -4,9 +4,9 @@ const path = require('path')
 
 let main = {
   target: 'electron-main',
-  entry: './src/main.js',
+  entry: path.join(__dirname, '../src/main.js'),
   output: {
-    path: path.join(__dirname, 'public'),
+    path: path.join(__dirname, '../public'),
     filename: 'main.js'
   },
   node: {
@@ -27,7 +27,6 @@ if (process.env.NODE_ENV === 'production') {
       warnings: false
     }
   })
-  main.entry = './src/main.js'
   main.plugins.push(uglifyjs)
 } else {
   main.plugins.push(new webpack.DefinePlugin({

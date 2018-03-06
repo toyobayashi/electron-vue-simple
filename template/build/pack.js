@@ -4,16 +4,17 @@ const request = require('request')
 const { slog, log, ilog, elog, wlog } = require('cmd-rainbow')
 const fs = require('fs')
 const path = require('path')
-const packageJson = require('./package.json')
+const packageJson = require('../package.json')
 
 pack({
   platform: 'win32',
-  arch: process.argv[2] ? process.argv[2] : 'x64',
+  arch: process.argv[2],
   electronVersion: packageJson.devDependencies.electron,
-  distDir: path.join(__dirname, 'dist'),
-  ignore: new RegExp(`node_modules|build|release|dist|src|.gitignore|README|webpack|.eslintrc.json|package-lock.json|pack.js|.git|.vscode|dev.js|native.js`),
+  packDir: path.join(__dirname, '..'),
+  distDir: path.join(__dirname, '../dist'),
+  ignore: new RegExp(`node_modules|build|dist|src|.gitignore|README|.eslintrc.json|package-lock.json|.git|.vscode`),
   versionString: {
-    icon: path.join(__dirname, './src/res/icon/app.ico'),
+    icon: path.join(__dirname, '../src/res/icon/app.ico'),
     'file-version': packageJson.version,
     'product-version': packageJson.version,
     'version-string': {
@@ -32,7 +33,8 @@ function pack (option) {
   const PLATFORM = option.platform ? option.platform : 'win32'
   const ARCH = option.arch ? option.arch : 'ia32'
   const ELECTRON_VERSION = option.electronVersion ? option.electronVersion : packageJson.devDependencies.electron.slice(1)
-  const DIST_DIR = option.distDir ? option.distDir : path.join(__dirname, '../../../dist')
+  const PACK_DIR = option.packDir ? option.packDir : path.join(__dirname, '..')
+  const DIST_DIR = option.distDir ? option.distDir : path.join(__dirname, '../dist')
   const IGNORE_REGEXP = option.ignore
   const VERSION_STRING = option.versionString
 
@@ -68,7 +70,7 @@ function pack (option) {
     })
     .then((isChanged) => {
       if (isChanged) ilog(`[INFO ${t()}] EXE file changed.`)
-      return copy(path.join(__dirname), APP_PATH, IGNORE_REGEXP)
+      return copy(PACK_DIR, APP_PATH, IGNORE_REGEXP)
     })
     .then(pathArr => {
       let files = fs.readdirSync(BIN_PATH)

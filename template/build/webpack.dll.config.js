@@ -1,7 +1,7 @@
 const webpack = require('webpack')
 const path = require('path')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-const { dependencies } = require('./package.json')
+const { dependencies } = require('../package.json')
 
 const renderer = {
   target: 'electron-renderer',
@@ -15,7 +15,7 @@ const renderer = {
     __dirname: false
   },
   output: {
-    path: path.join(__dirname, 'public'),
+    path: path.join(__dirname, '../public'),
     filename: 'dll.js',
     library: 'dll'
   },
@@ -31,7 +31,7 @@ const renderer = {
       }
     }),
     new webpack.DllPlugin({
-      path: path.join(__dirname, './build/manifest.json'),
+      path: path.join(__dirname, 'manifest.json'),
       name: 'dll'
     })
   ]

@@ -1,5 +1,5 @@
 const path = require('path')
-const outputPath = path.join(__dirname, 'public')
+const outputPath = path.join(__dirname, '../public')
 const nativeDir = './lib'
 
 const native = (nativeModules) => {
