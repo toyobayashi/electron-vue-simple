@@ -8,13 +8,13 @@ function createWindow () {
     height: 600
   })
 
-  let winURL = process.env.NODE_ENV === 'dev'
+  let winURL = process.env.NODE_ENV === 'development'
     ? 'http://localhost:7777/index.html'
     : `file:///${__dirname.replace(/\\/g, '/')}/index.html`
 
   mainWindow.loadURL(winURL)
 
-  if (process.env.NODE_ENV === 'dev') mainWindow.webContents.openDevTools()
+  if (process.env.NODE_ENV === 'development') mainWindow.webContents.openDevTools()
 
   mainWindow.on('closed', function () {
     mainWindow = null

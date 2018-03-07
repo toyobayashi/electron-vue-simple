@@ -6,9 +6,7 @@ const { dependencies } = require('../package.json')
 const renderer = {
   target: 'electron-renderer',
   entry: {
-    vendor: [
-      ...Object.keys(dependencies).filter(moduleName => moduleName !== 'vue')
-    ]
+    vendor: Object.keys(dependencies)
   },
   node: {
     __filename: false,
@@ -33,10 +31,11 @@ const renderer = {
     new webpack.DllPlugin({
       path: path.join(__dirname, 'manifest.json'),
       name: 'dll'
+    }),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': process.env.NODE_ENV === 'production' ? '"production"' : '"development"'
     })
   ]
 }
-
-renderer.entry.vendor.push(process.env.NODE_ENV === 'production' ? 'vue/dist/vue.runtime.min.js' : 'vue')
 
 module.exports = renderer

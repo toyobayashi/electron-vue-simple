@@ -6,7 +6,7 @@ const native = require('./native.js')
 
 let renderer = {
   target: 'electron-renderer',
-  entry: path.join(__dirname, '../src/renderer.js'),
+  entry: path.join(__dirname, '../src/js/renderer.js'),
   output: {
     path: path.join(__dirname, '../public'),
     filename: 'renderer.js'
@@ -34,11 +34,6 @@ let renderer = {
         // other vue-loader options go here
       }
     }]
-  },
-  resolve: {
-    alias: {
-      'vue': process.env.NODE_ENV === 'production' ? 'vue/dist/vue.runtime.min.js' : 'vue'
-    }
   },
   externals: native(['hello']),
   plugins: [

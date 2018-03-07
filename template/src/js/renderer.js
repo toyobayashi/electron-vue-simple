@@ -1,6 +1,6 @@
-import './css/public.css'
+import '../css/public.css'
 import Vue from 'vue'
-import App from './vue/App.vue'
+import App from '../vue/App.vue'
 import electron from 'electron'
 
 Vue.use({
