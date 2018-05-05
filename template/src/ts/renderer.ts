@@ -2,7 +2,7 @@ import '../css/style.css'
 import Vue from 'vue'
 import * as electron from 'electron'
 import App from '../vue/App.vue'
-import getPath from './get-path.js'
+import getPath from './get-path'
 
 if (process.env.NODE_ENV !== 'production') {
   electron.ipcRenderer.on('hot-reload', () => {

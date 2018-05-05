@@ -5,6 +5,12 @@
       "required": true,
       "label": "Project name"
     },
+    "version": {
+      "type": "string",
+      "required": true,
+      "label": "Project version",
+      "default": "1.0.0"
+    },
     "description": {
       "type": "string",
       "required": true,
@@ -13,12 +19,31 @@
     },
     "author": {
       "type": "string",
+      "required": true,
       "label": "Author"
     },
     "license": {
       "type": "string",
       "label": "License",
       "default": "MIT"
+    },
+    "lang": {
+      "type": "list",
+      "message": "Use JavaScript or TypeScript?",
+      "default": "JavaScript",
+      "choices": [
+        "JavaScript",
+        "TypeScript"
+      ]
     }
+  },
+  "filters": {
+    "src/ts/**/*": "lang === 'TypeScript'",
+    "tsconfig.json": "lang === 'TypeScript'",
+    "tslint.json": "lang === 'TypeScript'",
+    "webpack/tsconfig.json": "lang === 'TypeScript'",
+    "webpack/*.ts": "lang === 'TypeScript'",
+    "webpack/*.js": "lang === 'JavaScript'",
+    ".eslintrc.json": "lang === 'JavaScript'"
   }
 }

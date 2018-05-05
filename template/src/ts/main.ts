@@ -1,8 +1,8 @@
 import { app, BrowserWindow, ipcMain, Event } from 'electron'
 import { format } from 'url'
-import getPath from './get-path.js'
+import getPath from './get-path'
 
-let mainWindow
+let mainWindow: BrowserWindow | null
 
 function createWindow () {
   if (process.env.NODE_ENV !== 'production') {
@@ -34,7 +34,7 @@ function createWindow () {
       })
     })
 
-    socket.on('error', error => {
+    socket.on('error', (error: Error) => {
       console.log('error:' + error)
       socket.destroy()
     })
@@ -42,8 +42,8 @@ function createWindow () {
       console.log('Connection closed')
     })
 
-    ipcMain.once('hot-reload', event => {
-      socket.on('data', data => {
+    ipcMain.once('hot-reload', (event: Event) => {
+      socket.on('data', (data: Buffer) => {
         const msg = data.toString()
         if (msg === 'renderer') {
           event.sender.send('hot-reload')

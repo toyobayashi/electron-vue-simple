@@ -1,6 +1,0 @@
-build/manifest.json
-dist/
-node_modules/
-public/img/
-public/*.js
-public/*.css
